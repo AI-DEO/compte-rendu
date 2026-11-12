@@ -1,0 +1,13 @@
+{
+  "name": "Compte-rendu vocal AI-DEO",
+  "short_name": "Compte-rendu",
+  "start_url": "./",
+  "scope": "./",
+  "display": "browser",
+  "background_color": "#1f262a",
+  "theme_color": "#1f262a",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
