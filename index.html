@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f262a">
+<title>Compte-rendu vocal · AIDEO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+:root{
+  --bg:#1f262a; --surface:#2c363b; --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.18);
+  --text:#f4f5f6; --muted:rgba(244,245,246,.72); --orange:#fc8902; --turq:#26c2b7; --danger:#ff6b5a;
+  --r:8px; --r2:14px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Open Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column}
+button,input{font:inherit}
+button{cursor:pointer}
+button:disabled{cursor:not-allowed}
+.h{font-family:'Oswald',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.02em;margin:0}
+.lbl{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
+.muted{color:var(--muted)}
+[hidden]{display:none!important}
+
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(31,38,42,.92);backdrop-filter:blur(12px);z-index:5}
+.brand{display:flex;align-items:center;gap:10px;min-width:0}
+.brand img{height:38px;width:auto}
+.wordmark{font-family:'Oswald',sans-serif;font-weight:700;font-size:22px;letter-spacing:.04em}
+.wordmark b{color:var(--orange)}
+.hd-actions{display:flex;gap:8px;align-items:center}
+.pill{height:44px;padding:0 14px;border-radius:999px;border:1px solid rgba(38,194,183,.55);background:transparent;color:var(--turq);font-weight:700;font-size:13px;display:flex;align-items:center;gap:8px}
+.avatar{width:44px;height:44px;border-radius:999px;border:1px solid var(--line2);background:var(--surface);color:var(--text);font-family:'Oswald',sans-serif;font-weight:700;font-size:15px;overflow:hidden;padding:0;display:flex;align-items:center;justify-content:center}
+.avatar img{width:100%;height:100%;object-fit:cover}
+
+main{flex:1;width:100%;max-width:760px;margin:0 auto;padding:20px 16px 32px;display:flex;flex-direction:column}
+main.wide{max-width:1200px}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;text-align:center}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r2);box-shadow:0 4px 16px rgba(0,0,0,.35)}
+
+.btn{height:48px;padding:0 18px;border-radius:var(--r);border:none;font-weight:700;font-size:14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform 80ms,filter .15s}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:hover:not(:disabled){filter:brightness(1.08)}
+.btn-orange{background:var(--orange);color:var(--bg)}
+.btn-turq{background:var(--turq);color:var(--bg)}
+.btn-ghost{background:transparent;border:1px solid var(--line2);color:var(--text)}
+.btn-line{background:transparent;border:1px solid rgba(38,194,183,.6);color:var(--turq)}
+.btn:disabled{background:#3a464c;color:rgba(244,245,246,.55);border:none}
+svg{flex-shrink:0}
+
+/* login */
+#login .card{padding:40px 28px;max-width:420px;width:100%;display:flex;flex-direction:column;align-items:center;gap:24px}
+#gbtn{min-height:44px;display:flex;justify-content:center}
+.lock{display:flex;align-items:center;gap:6px;font-size:12px}
+
+/* record */
+.mic{width:168px;height:168px;border-radius:999px;border:none;background:var(--orange);color:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;box-shadow:0 0 24px rgba(252,137,2,.35);transition:transform 80ms}
+.mic:active{transform:scale(.97)}
+.mic span{font-family:'Oswald',sans-serif;font-weight:700;font-size:17px;letter-spacing:.06em}
+.mic.stop{background:var(--surface);border:3px solid var(--orange);color:var(--orange);animation:pulse 1.6s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(252,137,2,.55)}70%{box-shadow:0 0 0 28px rgba(252,137,2,0)}100%{box-shadow:0 0 0 0 rgba(252,137,2,0)}}
+.recdot{display:flex;align-items:center;gap:10px;color:var(--orange);font-size:13px;font-weight:700;letter-spacing:.14em}
+.recdot i{width:10px;height:10px;border-radius:999px;background:var(--orange);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.3}}
+.timer{font-family:'Oswald',sans-serif;font-size:64px;letter-spacing:.04em;margin:0;font-variant-numeric:tabular-nums}
+#wave{width:260px;height:56px}
+.spin{width:88px;height:88px;border-radius:999px;border:6px solid rgba(38,194,183,.2);border-top-color:var(--turq);animation:sp 1.1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* report */
+.done-grid{display:flex;flex-direction:column;gap:14px}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--surface);border-radius:999px;padding:4px}
+.tabs button{height:44px;border:none;border-radius:999px;background:transparent;color:var(--muted);font-weight:700;font-size:14px}
+.tabs button[aria-selected="true"]{background:var(--bg);color:var(--orange)}
+.panes{display:grid;gap:16px}
+.pane{padding:22px 20px;display:flex;flex-direction:column;gap:18px;min-width:0}
+.sec{display:flex;flex-direction:column;gap:6px}
+.sec h3{margin:0;font-family:'Oswald',sans-serif;font-weight:400;font-size:14px;letter-spacing:.08em;color:var(--orange);text-transform:uppercase}
+.sec p{margin:0;line-height:1.6;font-size:15px}
+.sec ul{margin:0;padding-left:18px;line-height:1.6;font-size:15px;display:flex;flex-direction:column;gap:3px}
+.act{display:flex;justify-content:space-between;gap:12px;background:var(--bg);border-radius:var(--r);padding:10px 12px;font-size:14px}
+.act span:last-child{color:var(--turq);font-weight:600;text-align:right}
+.meta{font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--turq)}
+.title{font-family:'Oswald',sans-serif;font-weight:700;font-size:24px;line-height:1.2;text-transform:uppercase;margin:0;word-break:break-word}
+.tline{display:flex;flex-direction:column;gap:3px}
+.tline b{font-size:12px;color:var(--orange)}
+.tline b.s2{color:var(--turq)}
+.tline p{margin:0;font-size:14px;line-height:1.55}
+.empty{font-size:14px;color:var(--muted);margin:0}
+.save{padding:16px;display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.input{flex:1 1 200px;min-width:0;height:48px;border-radius:var(--r);border:1px solid var(--line2);background:var(--bg);color:var(--text);padding:0 14px;font-size:15px}
+.input:focus{outline:2px solid var(--turq);outline-offset:1px}
+.note{font-size:12px}
+.note.ok{color:var(--turq);font-weight:600}
+.exports{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.err{border:1px solid rgba(255,107,90,.5);background:rgba(255,107,90,.08);border-radius:var(--r);padding:12px 14px;font-size:14px;line-height:1.5;text-align:left}
+
+/* history */
+.hist-top{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.back{width:44px;height:44px;border-radius:999px;border:1px solid var(--line2);background:transparent;color:var(--text);display:flex;align-items:center;justify-content:center}
+.hist-list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.hitem{width:100%;text-align:left;padding:14px 16px;color:var(--text);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.hitem strong{display:block;font-family:'Oswald',sans-serif;font-size:16px;text-transform:uppercase;letter-spacing:.02em;word-break:break-word}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--turq);color:var(--bg);font-weight:700;padding:12px 18px;border-radius:999px;font-size:14px;z-index:20;box-shadow:0 8px 32px rgba(0,0,0,.45)}
+
+@media (min-width:960px){
+  .tabs{display:none}
+  .panes{grid-template-columns:3fr 2fr;align-items:start}
+  .panes .pane[hidden]{display:flex!important}
+  #paneTrans{max-height:72vh;overflow:auto}
+}
+
+/* print */
+#print{display:none}
+@media print{
+  body{background:#fff;color:#111}
+  header,main,.toast{display:none!important}
+  #print{display:block;font-family:'Open Sans',sans-serif;color:#111;font-size:11pt;line-height:1.5}
+  #print h1{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:20pt;margin:0 0 4pt}
+  #print h2{font-family:'Oswald',sans-serif;text-transform:uppercase;font-size:13pt;color:#c46a00;margin:16pt 0 4pt;border-bottom:1px solid #ddd;padding-bottom:3pt}
+  #print .pm{color:#555;font-size:10pt;margin:0 0 8pt}
+  #print ul{margin:0;padding-left:16pt}
+  #print .pt{margin:0 0 6pt}
+  #print .pt b{color:#333}
+  #print .brk{page-break-before:always}
+}
+</style>
+</head>
+<body>
+
+<header id="hdr" hidden>
+  <div class="brand">
+    <img src="logo-aideo.png" alt="AIDEO" onerror="this.hidden=true;document.getElementById('wm').hidden=false">
+    <span id="wm" class="wordmark" hidden>AI<b>·</b>DEO</span>
+  </div>
+  <div class="hd-actions">
+    <button class="pill" id="btnHist" type="button">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>Historique
+    </button>
+    <button class="avatar" id="btnUser" type="button" aria-label="Se déconnecter"></button>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- Connexion -->
+  <section id="login" class="center">
+    <div class="card">
+      <img src="logo-aideo.png" alt="AIDEO" style="height:52px;width:auto" onerror="this.outerHTML='<span class=&quot;wordmark&quot; style=&quot;font-size:34px&quot;>AI<b>·</b>DEO</span>'">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <h1 class="h" style="font-size:30px;line-height:1.15">Compte-rendu vocal</h1>
+        <p class="muted" style="margin:0;font-size:15px;line-height:1.5">Enregistrez vos échanges, récupérez un compte-rendu structuré et sa transcription.</p>
+      </div>
+      <div id="gbtn"></div>
+      <p id="loginMsg" class="err" hidden></p>
+      <p class="lock muted"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Accès réservé aux comptes Google autorisés</p>
+    </div>
+  </section>
+
+  <!-- Prêt -->
+  <section id="idle" class="center" hidden>
+    <h1 class="h" style="font-size:30px;line-height:1.15">Enregistrez,<br>on rédige pour vous</h1>
+    <p class="muted" style="margin:0;font-size:15px;line-height:1.5;max-width:320px">Appuyez pour lancer le micro. Vous nommerez et sauvegarderez le compte-rendu à la fin.</p>
+    <button class="mic" id="btnStart" type="button" aria-label="Démarrer l'enregistrement">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>
+      <span>DÉMARRER</span>
+    </button>
+    <p id="idleMsg" class="err" hidden></p>
+    <p class="muted" style="margin:0;font-size:12px">Gardez l'écran allumé pendant l'enregistrement.</p>
+  </section>
+
+  <!-- Enregistrement -->
+  <section id="rec" class="center" hidden>
+    <div class="recdot"><i></i>ENREGISTREMENT EN COURS</div>
+    <p class="timer" id="timer">00:00</p>
+    <canvas id="wave" width="520" height="112" aria-hidden="true"></canvas>
+    <button class="mic stop" id="btnStop" type="button" aria-label="Arrêter l'enregistrement">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="5" y="5" width="14" height="14" rx="3"/></svg>
+      <span>ARRÊTER</span>
+    </button>
+  </section>
+
+  <!-- Traitement -->
+  <section id="proc" class="center" hidden>
+    <div class="spin" id="procSpin" aria-hidden="true"></div>
+    <h2 class="h" style="font-size:24px" id="procTitle">Rédaction en cours</h2>
+    <p class="muted" id="procText" style="margin:0;font-size:14px;line-height:1.5;max-width:320px">Transcription puis rédaction du compte-rendu. Comptez environ une minute pour dix minutes d'enregistrement.</p>
+    <div id="procErr" hidden style="display:flex;flex-direction:column;gap:12px;width:100%;max-width:360px">
+      <p class="err" id="procErrMsg"></p>
+      <button class="btn btn-orange" id="btnRetry" type="button">Réessayer l'envoi</button>
+      <button class="btn btn-ghost" id="btnDl" type="button">Télécharger l'audio</button>
+      <button class="btn btn-ghost" id="btnAbandon" type="button">Abandonner</button>
+    </div>
+  </section>
+
+  <!-- Compte-rendu -->
+  <section id="done" class="done-grid" hidden>
+    <div class="card save">
+      <label class="lbl" for="name">Nom de l'enregistrement</label>
+      <div class="row">
+        <input class="input" id="name" type="text" maxlength="120" autocomplete="off" placeholder="Ex. Point projet mairie">
+        <button class="btn btn-turq" id="btnSave" type="button" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></svg>Sauvegarder
+        </button>
+      </div>
+      <p class="note muted" id="saveNote">Nom obligatoire. La date et l'heure s'ajoutent automatiquement.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Affichage">
+      <button role="tab" id="tabRep" aria-selected="true" aria-controls="paneRep" type="button">Compte-rendu</button>
+      <button role="tab" id="tabTrans" aria-selected="false" aria-controls="paneTrans" type="button">Transcription</button>
+    </div>
+
+    <div class="panes">
+      <article class="card pane" id="paneRep" role="tabpanel" aria-labelledby="tabRep"></article>
+      <article class="card pane" id="paneTrans" role="tabpanel" aria-labelledby="tabTrans" hidden></article>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <span class="lbl">Exporter tout (compte-rendu + transcription)</span>
+      <div class="exports">
+        <button class="btn btn-ghost" id="btnCopy" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Copier tout
+        </button>
+        <button class="btn btn-line" id="btnPdf" type="button">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6"/><path d="m9 15 3 3 3-3"/></svg>PDF
+        </button>
+      </div>
+      <button class="btn btn-orange" id="btnNew" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/></svg>Nouvel enregistrement
+      </button>
+    </div>
+  </section>
+
+  <!-- Historique -->
+  <section id="hist" hidden>
+    <div class="hist-top">
+      <button class="back" id="btnBack" type="button" aria-label="Retour">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+      <h2 class="h" style="font-size:24px">Historique</h2>
+    </div>
+    <input class="input" id="search" type="search" placeholder="Rechercher par nom ou date" aria-label="Rechercher par nom ou date" style="width:100%">
+    <div class="hist-list" id="histList"></div>
+  </section>
+
+</main>
+
+<div id="print"></div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+const CONFIG = {
+  clientId: '636425826920-ni5hqloe3okqa8jrp4rgc78q2du39a1c.apps.googleusercontent.com',
+  api: 'https://n8n.srv1336558.hstgr.cloud/webhook/compte-rendu'
+};
+
+const $ = (id) => document.getElementById(id);
+const screens = ['login', 'idle', 'rec', 'proc', 'done', 'hist'];
+let token = null, profile = null;
+let recorder = null, stream = null, chunks = [], startAt = 0, tick = null, audioCtx = null, raf = null, wakeLock = null;
+let pendingBlob = null, current = null, historyItems = [];
+
+/* ---------- utilitaires ---------- */
+function show(name) {
+  screens.forEach(s => $(s).hidden = s !== name);
+  $('hdr').hidden = name === 'login';
+  $('main').classList.toggle('wide', name === 'done');
+  window.scrollTo(0, 0);
+}
+function toast(msg) {
+  const t = $('toast'); t.textContent = msg; t.hidden = false;
+  clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 2600);
+}
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function fmtDate(iso) {
+  const d = new Date(iso); if (isNaN(d)) return '';
+  const p = (n) => String(n).padStart(2, '0');
+  return p(d.getDate()) + '/' + p(d.getMonth() + 1) + '/' + d.getFullYear() + ' · ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+function decodeJwt(t) {
+  try { return JSON.parse(decodeURIComponent(escape(atob(t.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))))); } catch (e) { return null; }
+}
+function tokenValid() { return token && profile && profile.exp * 1000 > Date.now() + 60000; }
+
+/* ---------- connexion Google ---------- */
+function onCredential(resp) {
+  token = resp.credential; profile = decodeJwt(token);
+  try { localStorage.setItem('cr_token', token); } catch (e) {}
+  $('loginMsg').hidden = true;
+  setAvatar();
+  if (pendingBlob) { send(pendingBlob); } else { show('idle'); }
+}
+function setAvatar() {
+  const b = $('btnUser');
+  b.innerHTML = '';
+  if (profile && profile.picture) { const i = new Image(); i.src = profile.picture; i.alt = ''; i.referrerPolicy = 'no-referrer'; b.appendChild(i); }
+  else { b.textContent = ((profile && (profile.given_name || profile.email)) || '?').slice(0, 2).toUpperCase(); }
+  b.setAttribute('aria-label', 'Se déconnecter' + (profile && profile.email ? ' (' + profile.email + ')' : ''));
+}
+function logout(message) {
+  token = null; profile = null;
+  try { localStorage.removeItem('cr_token'); } catch (e) {}
+  if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
+  if (message) { $('loginMsg').textContent = message; $('loginMsg').hidden = false; }
+  show('login');
+}
+function initGoogle() {
+  if (!(window.google && google.accounts && google.accounts.id)) { setTimeout(initGoogle, 200); return; }
+  google.accounts.id.initialize({ client_id: CONFIG.clientId, callback: onCredential, auto_select: true });
+  google.accounts.id.renderButton($('gbtn'), { theme: 'filled_black', size: 'large', shape: 'pill', text: 'signin_with', locale: 'fr', width: 280 });
+}
+
+/* ---------- appels n8n ---------- */
+async function api(path, options) {
+  if (!tokenValid()) { const e = new Error('session'); e.session = true; throw e; }
+  const opts = Object.assign({ method: 'GET' }, options || {});
+  opts.headers = Object.assign({ Authorization: 'Bearer ' + token }, opts.headers || {});
+  const res = await fetch(CONFIG.api + path, opts);
+  let data = null; try { data = await res.json(); } catch (e) {}
+  if (res.status === 401) { const e = new Error((data && data.erreur) || 'Accès refusé'); e.session = true; throw e; }
+  if (!res.ok) throw new Error((data && data.erreur) || ('Erreur ' + res.status));
+  return data;
+}
+
+/* ---------- enregistrement ---------- */
+function pickMime() {
+  const list = ['audio/webm;codecs=opus', 'audio/mp4', 'audio/ogg;codecs=opus', 'audio/webm'];
+  if (!window.MediaRecorder) return '';
+  return list.find(m => MediaRecorder.isTypeSupported(m)) || '';
+}
+async function start() {
+  $('idleMsg').hidden = true;
+  if (!tokenValid()) { logout('Session expirée, reconnectez-vous avant d\'enregistrer.'); return; }
+  if (!navigator.mediaDevices || !window.MediaRecorder) { showIdleErr('Ce navigateur ne permet pas l\'enregistrement. Utilisez Chrome, Edge ou Safari récent.'); return; }
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } });
+  } catch (e) {
+    showIdleErr('Accès au micro refusé. Autorisez le micro pour ce site dans les réglages du navigateur, puis réessayez.'); return;
+  }
+  const mime = pickMime();
+  recorder = new MediaRecorder(stream, Object.assign({ audioBitsPerSecond: 32000 }, mime ? { mimeType: mime } : {}));
+  chunks = [];
+  recorder.ondataavailable = (e) => { if (e.data && e.data.size) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: recorder.mimeType || mime || 'audio/webm' });
+    cleanupStream();
+    send(blob);
+  };
+  recorder.start(1000);
+  startAt = Date.now();
+  $('timer').textContent = '00:00';
+  tick = setInterval(() => {
+    const s = Math.floor((Date.now() - startAt) / 1000);
+    $('timer').textContent = (s >= 3600 ? Math.floor(s / 3600) + ':' : '') + String(Math.floor(s / 60) % 60).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  }, 500);
+  drawWave();
+  try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch (e) {}
+  show('rec');
+}
+function showIdleErr(m) { $('idleMsg').textContent = m; $('idleMsg').hidden = false; }
+function stop() { if (recorder && recorder.state !== 'inactive') recorder.stop(); }
+function cleanupStream() {
+  clearInterval(tick); cancelAnimationFrame(raf);
+  if (stream) stream.getTracks().forEach(t => t.stop());
+  if (audioCtx) { audioCtx.close().catch(() => {}); audioCtx = null; }
+  if (wakeLock) { wakeLock.release().catch(() => {}); wakeLock = null; }
+}
+function drawWave() {
+  const c = $('wave'), g = c.getContext('2d');
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const an = audioCtx.createAnalyser(); an.fftSize = 128;
+    audioCtx.createMediaStreamSource(stream).connect(an);
+    const buf = new Uint8Array(an.frequencyBinCount);
+    const loop = () => {
+      an.getByteFrequencyData(buf);
+      g.clearRect(0, 0, c.width, c.height);
+      const n = 26, w = c.width / n;
+      for (let i = 0; i < n; i++) {
+        const v = buf[Math.floor(i * buf.length / n / 1.6)] / 255;
+        const h = Math.max(8, v * c.height);
+        g.fillStyle = '#26c2b7';
+        g.beginPath(); g.roundRect ? g.roundRect(i * w + w * .3, (c.height - h) / 2, w * .4, h, 5) : g.rect(i * w + w * .3, (c.height - h) / 2, w * .4, h); g.fill();
+      }
+      raf = requestAnimationFrame(loop);
+    };
+    loop();
+  } catch (e) {}
+}
+
+/* ---------- envoi et traitement ---------- */
+async function send(blob) {
+  pendingBlob = blob;
+  $('procSpin').hidden = false; $('procErr').hidden = true;
+  $('procTitle').textContent = 'Rédaction en cours';
+  $('procText').hidden = false;
+  show('proc');
+  try {
+    const ext = (blob.type.includes('mp4') ? 'm4a' : blob.type.includes('ogg') ? 'ogg' : 'webm');
+    const fd = new FormData();
+    fd.append('audio', blob, 'enregistrement.' + ext);
+    fd.append('nom', '');
+    const data = await api('/traiter', { method: 'POST', body: fd });
+    pendingBlob = null;
+    current = Object.assign({ saved: false }, data);
+    openReport();
+  } catch (e) {
+    if (e.session) { logout('Votre session a expiré. Reconnectez-vous : votre enregistrement est conservé et sera envoyé automatiquement.'); return; }
+    $('procSpin').hidden = true; $('procText').hidden = true;
+    $('procTitle').textContent = 'Envoi interrompu';
+    $('procErrMsg').textContent = (e.message === 'Failed to fetch' ? 'Impossible de joindre le serveur. Vérifiez la connexion internet.' : e.message) + ' Votre enregistrement est conservé tant que cette page reste ouverte.';
+    $('procErr').hidden = false;
+  }
+}
+function downloadAudio() {
+  if (!pendingBlob) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(pendingBlob);
+  a.download = 'enregistrement-' + new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-') + (pendingBlob.type.includes('mp4') ? '.m4a' : '.webm');
+  a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+
+/* ---------- affichage du compte-rendu ---------- */
+function list(arr) { return arr && arr.length ? '<ul>' + arr.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p class="empty">Aucun élément.</p>'; }
+function displayTitle() { return current.nom || 'Sans titre'; }
+function renderReport() {
+  const cr = current.compteRendu || {};
+  const actions = (cr.actions || []).filter(a => a && a.tache);
+  $('paneRep').innerHTML =
+    '<div class="sec"><h2 class="title">' + esc(displayTitle()) + '</h2><span class="meta">' + esc(fmtDate(current.date)) + (current.duree ? ' · ' + esc(String(current.duree).toUpperCase()) : '') + '</span></div>' +
+    '<div class="sec"><h3>Résumé</h3><p>' + (esc(cr.resume) || '<span class="muted">Non disponible.</span>') + '</p></div>' +
+    '<div class="sec"><h3>Points clés</h3>' + list(cr.points) + '</div>' +
+    '<div class="sec"><h3>Décisions</h3>' + list(cr.decisions) + '</div>' +
+    '<div class="sec"><h3>Actions</h3>' + (actions.length ? actions.map(a => '<div class="act"><span>' + esc(a.tache) + '</span><span>' + esc([a.qui, a.quand].filter(Boolean).join(' · ')) + '</span></div>').join('') : '<p class="empty">Aucune action.</p>') + '</div>';
+  const t = current.transcription || [];
+  $('paneTrans').innerHTML = '<span class="lbl">Transcription brute' + (current.duree ? ' · ' + esc(current.duree) : '') + '</span>' +
+    (t.length ? t.map(l => '<div class="tline"><b class="' + (/2$|4$|6$/.test(l.qui || '') ? 's2' : '') + '">' + esc(l.t) + (l.qui ? ' · ' + esc(l.qui) : '') + '</b><p>' + esc(l.texte) + '</p></div>').join('') : '<p class="empty">Transcription vide.</p>');
+}
+function openReport() {
+  $('name').value = current.saved ? current.nom : '';
+  $('name').placeholder = (current.compteRendu && current.compteRendu.titre) ? 'Suggestion : ' + current.compteRendu.titre : 'Ex. Point projet mairie';
+  updateSaveState();
+  setTab('rep');
+  renderReport();
+  show('done');
+}
+function updateSaveState() {
+  const v = $('name').value.trim();
+  $('btnSave').disabled = !v || (current && current.saved && v === current.nom);
+  const n = $('saveNote');
+  if (current && current.saved) { n.textContent = 'Sauvegardé dans l\'historique · ' + fmtDate(current.date); n.className = 'note ok'; }
+  else { n.textContent = 'Nom obligatoire. La date et l\'heure s\'ajoutent automatiquement.'; n.className = 'note muted'; }
+}
+async function save() {
+  const nom = $('name').value.trim(); if (!nom || !current) return;
+  $('btnSave').disabled = true;
+  try {
+    const r = await api('/sauvegarder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: current.id, nom }) });
+    if (r && r.ok === false) throw new Error(r.erreur || 'Sauvegarde impossible');
+    current.nom = nom; current.saved = true;
+    renderReport(); updateSaveState(); toast('Sauvegardé dans l\'historique');
+  } catch (e) {
+    if (e.session) { logout('Session expirée, reconnectez-vous puis sauvegardez à nouveau depuis l\'historique.'); return; }
+    toast(e.message); updateSaveState();
+  }
+}
+function setTab(which) {
+  const rep = which === 'rep';
+  $('tabRep').setAttribute('aria-selected', rep); $('tabTrans').setAttribute('aria-selected', !rep);
+  $('paneRep').hidden = !rep; $('paneTrans').hidden = rep;
+}
+
+/* ---------- export ---------- */
+function plainText() {
+  const cr = current.compteRendu || {};
+  const L = [];
+  L.push(displayTitle().toUpperCase());
+  L.push(fmtDate(current.date) + (current.duree ? ' · ' + current.duree : ''));
+  L.push('', 'RÉSUMÉ', cr.resume || '');
+  L.push('', 'POINTS CLÉS'); (cr.points || []).forEach(p => L.push('- ' + p));
+  L.push('', 'DÉCISIONS'); (cr.decisions || []).forEach(p => L.push('- ' + p));
+  L.push('', 'ACTIONS'); (cr.actions || []).filter(a => a && a.tache).forEach(a => L.push('- ' + a.tache + ([a.qui, a.quand].filter(Boolean).length ? ' (' + [a.qui, a.quand].filter(Boolean).join(', ') + ')' : '')));
+  L.push('', 'TRANSCRIPTION'); (current.transcription || []).forEach(l => L.push('[' + l.t + '] ' + (l.qui ? l.qui + ' : ' : '') + l.texte));
+  return L.join('\n');
+}
+async function copyAll() {
+  const txt = plainText();
+  try { await navigator.clipboard.writeText(txt); }
+  catch (e) { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); }
+  toast('Compte-rendu et transcription copiés');
+}
+function exportPdf() {
+  const cr = current.compteRendu || {};
+  const ul = (a) => a && a.length ? '<ul>' + a.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul>' : '<p>Aucun élément.</p>';
+  $('print').innerHTML =
+    '<h1>' + esc(displayTitle()) + '</h1><p class="pm">' + esc(fmtDate(current.date)) + (current.duree ? ' · ' + esc(current.duree) : '') + '</p>' +
+    '<h2>Résumé</h2><p>' + esc(cr.resume) + '</p>' +
+    '<h2>Points clés</h2>' + ul(cr.points) +
+    '<h2>Décisions</h2>' + ul(cr.decisions) +
+    '<h2>Actions</h2>' + ul((cr.actions || []).filter(a => a && a.tache).map(a => a.tache + ([a.qui, a.quand].filter(Boolean).length ? ' (' + [a.qui, a.quand].filter(Boolean).join(', ') + ')' : ''))) +
+    '<h2 class="brk">Transcription</h2>' + (current.transcription || []).map(l => '<p class="pt"><b>[' + esc(l.t) + '] ' + esc(l.qui || '') + '</b> ' + esc(l.texte) + '</p>').join('');
+  const old = document.title;
+  document.title = (displayTitle() + ' ' + fmtDate(current.date)).replace(/[\/:·]/g, '-').replace(/\s+/g, ' ').trim();
+  window.print();
+  setTimeout(() => document.title = old, 1000);
+}
+
+/* ---------- historique ---------- */
+async function openHistory() {
+  show('hist');
+  $('histList').innerHTML = '<p class="empty">Chargement…</p>';
+  try {
+    const r = await api('/historique');
+    historyItems = (r && r.elements) || [];
+    renderHistory();
+  } catch (e) {
+    if (e.session) { logout('Session expirée, reconnectez-vous.'); return; }
+    $('histList').innerHTML = '<p class="err">' + esc(e.message) + '</p>';
+  }
+}
+function renderHistory() {
+  const q = $('search').value.trim().toLowerCase();
+  const items = historyItems.filter(h => !q || (String(h.nom) + ' ' + fmtDate(h.date)).toLowerCase().includes(q));
+  if (!items.length) { $('histList').innerHTML = '<p class="empty">' + (historyItems.length ? 'Aucun résultat.' : 'Aucun compte-rendu sauvegardé pour le moment.') + '</p>'; return; }
+  $('histList').innerHTML = items.map((h, i) => '<button class="card hitem" type="button" data-id="' + esc(h.id) + '"><span><strong>' + esc(h.nom) + '</strong><span class="meta">' + esc(fmtDate(h.date)) + (h.duree ? ' · ' + esc(h.duree) : '') + '</span></span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>').join('');
+}
+
+/* ---------- événements ---------- */
+$('btnStart').onclick = start;
+$('btnStop').onclick = stop;
+$('btnRetry').onclick = () => pendingBlob && send(pendingBlob);
+$('btnDl').onclick = downloadAudio;
+$('btnAbandon').onclick = () => { if (confirm('Abandonner cet enregistrement ? Il sera perdu.')) { pendingBlob = null; show('idle'); } };
+$('name').oninput = updateSaveState;
+$('name').onkeydown = (e) => { if (e.key === 'Enter' && !$('btnSave').disabled) save(); };
+$('btnSave').onclick = save;
+$('tabRep').onclick = () => setTab('rep');
+$('tabTrans').onclick = () => setTab('trans');
+$('btnCopy').onclick = copyAll;
+$('btnPdf').onclick = exportPdf;
+$('btnNew').onclick = () => { current = null; show('idle'); };
+$('btnHist').onclick = () => { if (recorder && recorder.state === 'recording') { toast('Arrêtez d\'abord l\'enregistrement'); return; } openHistory(); };
+$('btnBack').onclick = () => show(current ? 'done' : 'idle');
+$('search').oninput = renderHistory;
+$('histList').onclick = (e) => {
+  const b = e.target.closest('.hitem'); if (!b) return;
+  const h = historyItems.find(x => String(x.id) === b.dataset.id); if (!h) return;
+  current = Object.assign({}, h, { saved: true }); openReport();
+};
+$('btnUser').onclick = () => {
+  if (recorder && recorder.state === 'recording') { toast('Arrêtez d\'abord l\'enregistrement'); return; }
+  if (confirm('Se déconnecter' + (profile && profile.email ? ' de ' + profile.email : '') + ' ?')) logout();
+};
+window.addEventListener('beforeunload', (e) => {
+  if ((recorder && recorder.state === 'recording') || pendingBlob) { e.preventDefault(); e.returnValue = ''; }
+});
+
+/* ---------- démarrage ---------- */
+(function boot() {
+  try { token = localStorage.getItem('cr_token'); } catch (e) {}
+  profile = token ? decodeJwt(token) : null;
+  if (tokenValid()) { setAvatar(); show('idle'); } else { token = null; profile = null; show('login'); }
+  initGoogle();
+})();
+</script>
+</body>
+</html>
